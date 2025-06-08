@@ -22,8 +22,27 @@ export default function Home() {
   const [showSearchDropdown, setShowSearchDropdown] = useState(false)
   const ITEMS_PER_PAGE = 50 // Increased from 20 to 50 for faster loading
   const [showInfo, setShowInfo] = useState(false)
+  const [backgroundPattern, setBackgroundPattern] = useState<Array<{
+    size: number;
+    top: number;
+    left: number;
+    rotation: number;
+    opacity: number;
+  }>>([])
 
   const bookmarkRef = useRef<HTMLDivElement>(null!)
+
+  // Generate background pattern
+  useEffect(() => {
+    const pattern = Array.from({ length: 10 }).map(() => ({
+      size: Math.random() * 15 + 10,
+      top: Math.random() * 100,
+      left: Math.random() * 100,
+      rotation: Math.random() * 360,
+      opacity: Math.random() * 0.3 + 0.1
+    }))
+    setBackgroundPattern(pattern)
+  }, [])
 
   // Load initial data
   useEffect(() => {
@@ -128,29 +147,21 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 dark:from-gray-900 dark:via-blue-900 dark:to-blue-800 relative overflow-hidden">
       {/* Background X Pattern */}
       <div className="absolute inset-0 opacity-5 dark:opacity-10">
-        {Array.from({ length: 10 }).map((_, i) => {
-          const size = Math.random() * 15 + 10 // Random size between 10rem and 25rem
-          const top = Math.random() * 100 // Random top position
-          const left = Math.random() * 100 // Random left position
-          const rotation = Math.random() * 360 // Random rotation
-          const opacity = Math.random() * 0.3 + 0.1 // Random opacity between 0.1 and 0.4
-          
-          return (
-            <div
-              key={i}
-              className="absolute font-bold text-gray-300 dark:text-gray-700 select-none"
-              style={{
-                top: `${top}%`,
-                left: `${left}%`,
-                fontSize: `${size}rem`,
-                transform: `rotate(${rotation}deg)`,
-                opacity: opacity
-              }}
-            >
-              X
-            </div>
-          )
-        })}
+        {backgroundPattern.map((pattern, i) => (
+          <div
+            key={i}
+            className="absolute font-bold text-gray-300 dark:text-gray-700 select-none"
+            style={{
+              top: `${pattern.top}%`,
+              left: `${pattern.left}%`,
+              fontSize: `${pattern.size}rem`,
+              transform: `rotate(${pattern.rotation}deg)`,
+              opacity: pattern.opacity
+            }}
+          >
+            X
+          </div>
+        ))}
       </div>
 
       {/* Fixed Header */}
