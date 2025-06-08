@@ -29,17 +29,36 @@ export const eventInfo: Record<string, EventInfo> = {
     ],
     impact: "Introduced key characters who would become major players in the X-Men universe, including Quicksilver and Scarlet Witch."
   },
-  // Add more events here following the same structure
-  // Example:
-  // "Dark Phoenix Saga": {
-  //   title: "Dark Phoenix Saga",
-  //   description: "Jean Grey becomes corrupted by the Phoenix Force, leading to one of the most tragic and impactful stories in X-Men history.",
-  //   startDate: "January 1980",
-  //   endDate: "October 1980",
-  //   keyIssues: [
-  //     "X-Men vol. 1 #129",
-  //     "X-Men vol. 1 #137"
-  //   ],
-  //   impact: "One of the most significant storylines in X-Men history, leading to Jean Grey's death and the team's reformation."
-  // }
-} 
+  "The Phoenix Saga": {
+    title: "The Phoenix Saga",
+    description: "Jean Grey becomes corrupted by the Phoenix Force, leading to one of the most tragic and impactful stories in X-Men history.",
+    startDate: "January 1976",
+    endDate: "October 1976",
+    keyIssues: [
+      "X-Men vol. 1 #101",
+      "X-Men vol. 1 #108"
+    ],
+    impact: "One of the most significant storylines in X-Men history, leading to Jean Grey's death and the team's reformation."
+  },
+  "Mutant Massacre": {
+    title: "Mutant Massacre",
+    description: "A group of mutants, led by Wolverine, attack a school for mutant children, killing many of the students. This event marks a turning point in the X-Men's relationship with the general public.",
+    startDate: "January 1986",
+    keyIssues: [
+      "Uncanny X-Men #210",
+      "X-Factor #9",
+      "Uncanny X-Men #211",
+      "X-Factor #10",
+      "New Mutants #46",
+      "Thor #373",
+      "Power Pack #27",
+      "Uncanny X-Men #212",
+      "Thor #374",
+      "X-Factor #11",
+      "Uncanny X-Men #213",
+      "Daredevil #238"
+    ],
+    impact: "One of the most significant events in X-Men history, leading to the team's disbandment and the creation of the X-Factor team."
+  },
+
+}

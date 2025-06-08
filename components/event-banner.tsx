@@ -21,8 +21,9 @@ export function EventBanner({ eventName }: EventBannerProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="w-full bg-orange-100 dark:bg-orange-900/30 p-2 rounded-lg cursor-pointer hover:bg-orange-200 dark:hover:bg-orange-900/50 transition-colors text-center">
-          <h3 className="font-semibold text-orange-800 dark:text-orange-200">
+        <div className="w-full bg-orange-100 dark:bg-orange-900/30 p-2 rounded-lg cursor-pointer hover:bg-orange-200 dark:hover:bg-orange-900/50 transition-colors text-center border-2 border-orange-500 dark:border-orange-600 flex items-center">
+          <span className="font-bold text-orange-800 dark:text-orange-200 px-4 border-r-2 border-orange-500 dark:border-orange-600">Event</span>
+          <h3 className="font-semibold text-orange-800 dark:text-orange-200 flex-1">
             {event.title}
           </h3>
         </div>

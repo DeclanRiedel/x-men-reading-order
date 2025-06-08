@@ -7,5 +7,7 @@ export interface Comic {
   Writer: string
   Penciller: string
   "Main?": string
-  Event?: string | null 
+  Event?: string | null
+  EraStart?: string | null
+  Note?: string | null
 }

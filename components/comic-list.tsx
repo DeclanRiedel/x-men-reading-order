@@ -5,6 +5,8 @@ import ComicCard from "@/components/comic-card"
 import { groupComicsByMainOrder } from "@/lib/utils"
 import type { Comic } from "@/types/comic"
 import { EventBanner } from "@/components/event-banner"
+import { EraBanner } from "@/components/era-banner"
+import { NoteBanner } from "@/components/note-banner"
 
 interface ComicListProps {
   comics: Comic[]
@@ -32,10 +34,24 @@ export default function ComicList({ comics, bookmark, bookmarkRef, onSetBookmark
 
         return (
           <div key={mainOrder} className="space-y-4">
+            {/* Era Banner - Full width, centered */}
+            {mainComic.EraStart && (
+              <div className="w-full">
+                <EraBanner eraName={mainComic.EraStart} />
+              </div>
+            )}
+
             {/* Event Banner - Full width, centered */}
             {mainComic.Event && (
               <div className="w-full">
                 <EventBanner eventName={mainComic.Event} />
+              </div>
+            )}
+
+            {/* Note Banner - Full width, centered */}
+            {mainComic.Note && (
+              <div className="w-full">
+                <NoteBanner noteName={mainComic.Note} />
               </div>
             )}
 
