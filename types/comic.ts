@@ -7,4 +7,5 @@ export interface Comic {
   Writer: string
   Penciller: string
   "Main?": string
+  Event?: string | null 
 }
