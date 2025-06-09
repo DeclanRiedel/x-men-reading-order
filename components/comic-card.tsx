@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import type { Comic } from "@/types/comic"
 import { extractFirstAppearances } from "@/lib/utils"
-import ComicCover from "./comic-cover"
+import { ComicCover } from "./comic-cover"
 
 interface ComicCardProps {
   comic: Comic
@@ -15,15 +15,18 @@ interface ComicCardProps {
 }
 
 export default function ComicCard({ comic, isBookmarked, onSetBookmark, isMain }: ComicCardProps) {
-  const firstAppearances = extractFirstAppearances(comic.Events)
+  const firstAppearances = extractFirstAppearances(comic["Events/Characters/Universes"] || "")
   const canBeBookmarked = comic.Order.endsWith('.001')
 
   return (
     <div className="flex flex-col items-center space-y-3 group" data-order={comic.Order}>
       {/* Comic Cover */}
       <div className="relative">
-        <div className={`p-1 rounded-lg ${comic["Main?"] === "Yes" ? "bg-blue-200 dark:bg-blue-800" : "bg-red-200 dark:bg-red-800"}`}>
-          <ComicCover comic={comic} className="w-32 h-48 transition-transform group-hover:scale-105" />
+        <div className={`p-1 rounded-lg ${comic.Main === "Yes" ? "bg-blue-200 dark:bg-blue-800" : "bg-red-200 dark:bg-red-800"}`}>
+          <ComicCover 
+            comic={comic}
+            className="w-32 h-48 transition-transform group-hover:scale-105" 
+          />
         </div>
 
         {/* Bookmark button */}

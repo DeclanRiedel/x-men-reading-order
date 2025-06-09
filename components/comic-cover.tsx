@@ -1,63 +1,78 @@
 "use client"
 
+import Image from "next/image"
 import { useState, useEffect } from "react"
-import { searchComicByTitle } from "@/lib/comicvine-api"
-import type { Comic } from "@/types/comic"
+import { Comic } from "@/types/comic"
 
 interface ComicCoverProps {
   comic: Comic
   className?: string
 }
 
-export default function ComicCover({ comic, className = "" }: ComicCoverProps) {
-  const [coverUrl, setCoverUrl] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
+export function ComicCover({ comic, className = "" }: ComicCoverProps) {
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    async function fetchCover() {
+    const fetchCover = async () => {
       try {
-        setLoading(true)
-        const url = await searchComicByTitle(comic.Book)
-        setCoverUrl(url)
-        setError(!url)
+        setIsLoading(true)
+        setError(null)
+
+        const params = new URLSearchParams({
+          book: comic.Book,
+          published: comic.Published
+        })
+
+        const response = await fetch(`/api/comic-cover?${params}`)
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to fetch comic cover")
+        }
+
+        setImageUrl(data.imageUrl)
       } catch (err) {
-        console.error("Error fetching cover:", err)
-        setError(true)
+        console.error("Error fetching comic cover:", err)
+        setError(err instanceof Error ? err.message : "Failed to fetch comic cover")
       } finally {
-        setLoading(false)
+        setIsLoading(false)
       }
     }
 
     fetchCover()
-  }, [comic.Book])
+  }, [comic.Book, comic.Published])
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className={`aspect-[2/3] bg-gray-200 dark:bg-gray-700 animate-pulse rounded-lg ${className}`}>
-        <div className="w-full h-full flex items-center justify-center">
-          <div className="text-gray-400 dark:text-gray-500 text-sm">Loading...</div>
+      <div className={`relative aspect-[2/3] bg-gray-200 animate-pulse ${className}`}>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-8 h-8 border-4 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
         </div>
       </div>
     )
   }
 
-  if (error || !coverUrl) {
+  if (error || !imageUrl) {
     return (
-      <div
-        className={`aspect-[2/3] bg-black dark:bg-black rounded-lg flex items-center justify-center text-white font-bold text-center p-2 ${className}`}
-      >
-        <div className="text-xs leading-tight">{comic.Book}</div>
+      <div className={`relative aspect-[2/3] bg-gray-200 ${className}`}>
+        <div className="absolute inset-0 flex items-center justify-center text-gray-500">
+          <span className="text-sm text-center px-2">No cover available</span>
+        </div>
       </div>
     )
   }
 
   return (
-    <img
-      src={coverUrl}
-      alt={comic.Book}
-      className={`aspect-[2/3] object-cover rounded-lg shadow-md ${className}`}
-      onError={() => setError(true)}
-    />
+    <div className={`relative aspect-[2/3] ${className}`}>
+      <Image
+        src={imageUrl}
+        alt={`Cover for ${comic.Book}`}
+        fill
+        className="object-cover rounded-lg shadow-md"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      />
+    </div>
   )
 }
