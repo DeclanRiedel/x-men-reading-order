@@ -28,6 +28,6 @@ A comprehensive reading order guide for X-Men comics
 - fix types and seperate from lib/utils
 - batching for summaries once that comes, api calls used there or just 10x the one json file idk if that's really that bad 
 - fix header for mobile view since its really really ugly
-
+- search does not jumpto for compactview
 ## Notes:
 edited row 5015 of the xlsx incrementing order numbers 512.011 since duplicate at 5015 & 5016 

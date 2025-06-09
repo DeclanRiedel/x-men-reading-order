@@ -106,27 +106,28 @@ export default function Home() {
     const comicIndex = comics.findIndex(c => c.Order === comic.Order)
     const requiredPage = Math.ceil((comicIndex + 1) / ITEMS_PER_PAGE)
     
-    // If we need to load more pages, do so
-    if (requiredPage > page) {
-      setPage(requiredPage)
-      // Wait for the next render cycle to ensure the comic is loaded
-      setTimeout(() => {
-        const comicElement = document.querySelector(`[data-order="${comic.Order}"]`)
-        if (comicElement) {
-          const rect = comicElement.getBoundingClientRect()
-          const scrollTop = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2
-          window.scrollTo({ top: scrollTop, behavior: "smooth" })
-        }
-      }, 100)
-    } else {
-      // If the comic is already loaded, scroll to it immediately
+    // Always set the page to ensure we load enough content
+    setPage(requiredPage)
+    
+    // Wait for the next render cycle to ensure the comic is loaded
+    setTimeout(() => {
       const comicElement = document.querySelector(`[data-order="${comic.Order}"]`)
       if (comicElement) {
         const rect = comicElement.getBoundingClientRect()
         const scrollTop = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2
         window.scrollTo({ top: scrollTop, behavior: "smooth" })
+      } else {
+        // If element not found, try again after a short delay
+        setTimeout(() => {
+          const retryElement = document.querySelector(`[data-order="${comic.Order}"]`)
+          if (retryElement) {
+            const rect = retryElement.getBoundingClientRect()
+            const scrollTop = window.scrollY + rect.top - window.innerHeight / 2 + rect.height / 2
+            window.scrollTo({ top: scrollTop, behavior: "smooth" })
+          }
+        }, 100)
       }
-    }
+    }, 100)
   }
 
   // Jump to bookmark
@@ -145,55 +146,54 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-red-900 relative">
-      {/* X-Men Background Pattern */}
-      <div className="fixed inset-0 bg-[url('/xmen-pattern.svg')] opacity-10 pointer-events-none" />
-      
+    <main className="min-h-screen bg-white dark:bg-gray-900 relative">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-6">
             <div className="flex flex-col">
-              <h1 className="text-xl font-bold whitespace-nowrap">X-Men Reading Order</h1>
+              <h1 className="text-2xl font-bold whitespace-nowrap">X-Men Reading Order</h1>
               <a 
-                href="https://www.reddit.com/r/xmen/comments/1bqj3y/xmen_reading_order_guide/" 
+                href="https://www.reddit.com/r/xmen/comments/15a71l3/the_comprehensive_xmen_reading_list_2023_update/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
               >
-                Credit to: u/DeclanRiedel
+                Credit to: u/DoctorSloshee
               </a>
             </div>
           </div>
 
           <div className="flex-1 max-w-2xl mx-4">
-            <Command className="rounded-lg border shadow-md">
-              <CommandInput
-                placeholder="Search issues..."
-                value={searchQuery}
-                onValueChange={setSearchQuery}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && filteredComics.length > 0) {
-                    handleSearchSelect(filteredComics[0])
-                  }
-                }}
-              />
-              {showSearchDropdown && (
-                <CommandList className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 rounded-lg border shadow-lg max-h-[180px]">
-                  <CommandEmpty>No issues found.</CommandEmpty>
-                  <CommandGroup>
-                    {filteredComics.slice(0, 5).map((comic) => (
-                      <CommandItem
-                        key={comic.Order}
-                        onSelect={() => handleSearchSelect(comic)}
-                      >
-                        {comic.Book}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              )}
-            </Command>
+            <div className="relative w-full">
+              <Command className="rounded-lg border shadow-md">
+                <CommandInput
+                  placeholder="Search issues..."
+                  value={searchQuery}
+                  onValueChange={setSearchQuery}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && filteredComics.length > 0) {
+                      handleSearchSelect(filteredComics[0])
+                    }
+                  }}
+                />
+                {showSearchDropdown && (
+                  <CommandList className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 rounded-lg border shadow-lg max-h-[180px] w-full">
+                    <CommandEmpty>No issues found.</CommandEmpty>
+                    <CommandGroup>
+                      {filteredComics.slice(0, 5).map((comic) => (
+                        <CommandItem
+                          key={comic.Order}
+                          onSelect={() => handleSearchSelect(comic)}
+                        >
+                          {comic.Book}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                )}
+              </Command>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
