@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Search, BookmarkIcon, Github, HelpCircle } from "lucide-react"
+import { Search, BookmarkIcon, Github, HelpCircle, List, Grid } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useInView } from "react-intersection-observer"
@@ -20,6 +20,7 @@ export default function Home() {
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
   const [showSearchDropdown, setShowSearchDropdown] = useState(false)
+  const [isListView, setIsListView] = useState(false)
   const ITEMS_PER_PAGE = 50 // Increased from 20 to 50 for faster loading
   const [showInfo, setShowInfo] = useState(false)
   const [backgroundPattern, setBackgroundPattern] = useState<Array<{
@@ -144,114 +145,91 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 dark:from-gray-900 dark:via-blue-900 dark:to-blue-800 relative overflow-hidden">
-      {/* Background X Pattern */}
-      <div className="absolute inset-0 opacity-5 dark:opacity-10">
-        {backgroundPattern.map((pattern, i) => (
-          <div
-            key={i}
-            className="absolute font-bold text-gray-300 dark:text-gray-700 select-none"
-            style={{
-              top: `${pattern.top}%`,
-              left: `${pattern.left}%`,
-              fontSize: `${pattern.size}rem`,
-              transform: `rotate(${pattern.rotation}deg)`,
-              opacity: pattern.opacity
-            }}
-          >
-            X
-          </div>
-        ))}
-      </div>
-
-      {/* Fixed Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50">
-        <div className="max-w-6xl mx-auto px-4 md:px-8 py-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex flex-col items-start">
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">X-Men Reading Order</h1>
+    <main className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-red-900 relative">
+      {/* X-Men Background Pattern */}
+      <div className="fixed inset-0 bg-[url('/xmen-pattern.svg')] opacity-10 pointer-events-none" />
+      
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-6">
+            <div className="flex flex-col">
+              <h1 className="text-xl font-bold whitespace-nowrap">X-Men Reading Order</h1>
               <a 
-                href="https://www.reddit.com/r/xmen/comments/15a71l3/the_comprehensive_xmen_reading_list_2023_update/" 
+                href="https://www.reddit.com/r/xmen/comments/1bqj3y/xmen_reading_order_guide/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
               >
-                Credit to: u/DoctorSloshee
+                Credit to: u/DeclanRiedel
               </a>
             </div>
+          </div>
 
-            <div className="relative flex-1 max-w-md">
-              <Command className="rounded-lg border shadow-md">
-                <CommandInput
-                  placeholder="Search issues..."
-                  value={searchQuery}
-                  onValueChange={setSearchQuery}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && filteredComics.length > 0) {
-                      handleSearchSelect(filteredComics[0])
-                    }
-                  }}
-                />
-                {showSearchDropdown && (
-                  <CommandList className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 rounded-lg border shadow-lg max-h-[180px]">
-                    <CommandEmpty>No issues found.</CommandEmpty>
-                    <CommandGroup>
-                      {filteredComics.slice(0, 5).map((comic) => (
-                        <CommandItem
-                          key={comic.Order}
-                          onSelect={() => handleSearchSelect(comic)}
-                        >
-                          {comic.Book}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                )}
-              </Command>
-            </div>
+          <div className="flex-1 max-w-2xl mx-4">
+            <Command className="rounded-lg border shadow-md">
+              <CommandInput
+                placeholder="Search issues..."
+                value={searchQuery}
+                onValueChange={setSearchQuery}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && filteredComics.length > 0) {
+                    handleSearchSelect(filteredComics[0])
+                  }
+                }}
+              />
+              {showSearchDropdown && (
+                <CommandList className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 rounded-lg border shadow-lg max-h-[180px]">
+                  <CommandEmpty>No issues found.</CommandEmpty>
+                  <CommandGroup>
+                    {filteredComics.slice(0, 5).map((comic) => (
+                      <CommandItem
+                        key={comic.Order}
+                        onSelect={() => handleSearchSelect(comic)}
+                      >
+                        {comic.Book}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              )}
+            </Command>
+          </div>
 
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 rounded-full bg-white/90 dark:bg-gray-800/90 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                onClick={scrollToBookmark}
-                disabled={!bookmark}
-                title="Jump to Bookmark"
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsListView(!isListView)}
+              title={isListView ? "Switch to Grid View" : "Switch to List View"}
+            >
+              {isListView ? <Grid className="h-4 w-4" /> : <List className="h-4 w-4" />}
+            </Button>
+            <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowInfo(true)}
+            >
+              <HelpCircle className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              asChild
+            >
+              <a
+                href="https://github.com/DeclanRiedel"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <BookmarkIcon size={16} />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 rounded-full bg-white/90 dark:bg-gray-800/90 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                onClick={() => setShowInfo(true)}
-                title="About this reading order"
-              >
-                <HelpCircle size={16} />
-              </Button>
-              <ThemeToggle />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 rounded-full bg-white/90 dark:bg-gray-800/90 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                asChild
-              >
-                <a
-                  href="https://github.com/DeclanRiedel"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="GitHub Profile"
-                >
-                  <Github size={16} />
-                </a>
-              </Button>
-            </div>
+                <Github className="h-4 w-4" />
+              </a>
+            </Button>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
       <div className="pt-24 px-4 md:px-8 pb-8 relative z-10">
         <div className="max-w-6xl mx-auto">
           <ComicList
@@ -259,6 +237,7 @@ export default function Home() {
             bookmark={bookmark}
             bookmarkRef={bookmarkRef}
             onSetBookmark={handleSetBookmark}
+            isListView={isListView}
           />
 
           {hasMore && (

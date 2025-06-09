@@ -1,13 +1,13 @@
 export interface Comic {
   Order: string
   Book: string
-  Events: string
   Published: string
-  Era: string
-  Writer: string
-  Penciller: string
-  "Main?": string
-  Event?: string | null
-  EraStart?: string | null
-  Note?: string | null
+  EraStart?: string
+  EraEnd?: string
+  Event?: string
+  Note?: string
+  Writer?: string
+  Penciller?: string
+  "Events/Characters/Universes"?: string
+  Main?: string
 }
