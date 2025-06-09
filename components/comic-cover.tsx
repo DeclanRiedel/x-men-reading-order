@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { searchComicByTitle, getPlaceholderImage } from "@/lib/marvel-api"
+import { searchComicByTitle } from "@/lib/comicvine-api"
 import type { Comic } from "@/types/comic"
 
 interface ComicCoverProps {
@@ -54,7 +54,7 @@ export default function ComicCover({ comic, className = "" }: ComicCoverProps) {
 
   return (
     <img
-      src={coverUrl || "/placeholder.svg"}
+      src={coverUrl}
       alt={comic.Book}
       className={`aspect-[2/3] object-cover rounded-lg shadow-md ${className}`}
       onError={() => setError(true)}

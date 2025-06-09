@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Search, BookmarkIcon, Github, HelpCircle, List, Grid } from "lucide-react"
+import { Search, BookmarkIcon, Github, HelpCircle, List, Grid, Bookmark } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useInView } from "react-intersection-observer"
@@ -205,6 +205,16 @@ export default function Home() {
             >
               {isListView ? <Grid className="h-4 w-4" /> : <List className="h-4 w-4" />}
             </Button>
+            {bookmark && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={scrollToBookmark}
+                title="Jump to Bookmark"
+              >
+                <Bookmark className="h-4 w-4" />
+              </Button>
+            )}
             <ThemeToggle />
             <Button
               variant="ghost"
